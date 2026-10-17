@@ -19,3 +19,9 @@ yarn-error.log*
 # IDE files
 .vscode/
 .idea/
+
+# Python & Virtualenv
+venv/
+*.pyc
+__pycache__/
+*.sqlite3

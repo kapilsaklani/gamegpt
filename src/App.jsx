@@ -3,10 +3,8 @@ import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-ro
 import { ChatProvider, useChat } from "./contexts/ChatContext";
 import ChatWindow from "./components/ChatWindow";
 import InputBar from "./components/InputBar";
-import ThemeToggle from "./components/ThemeToggle";
 import Home from "./Home";
 import Wishlist from "./components/Wishlist";
-import { fetchGeminiResponse } from "./api/gemini";
 
 function Sidebar() {
   const { chatList, activeChatId, switchChat, newChat } = useChat();
@@ -91,34 +89,23 @@ const fallbackGames = [
 ];
 
 function AppContent() {
-  const { chatHistory, setChatHistory, isTyping, setIsTyping, theme } = useChat();
-  const GEMINI_API_KEY = "AIzaSyCNsatFnfNEEjP9nZWTa6J4wmOInQyE62U";
+  const { chatHistory, setChatHistory, isTyping, setIsTyping, sendMessage } = useChat();
   const [genreLoading, setGenreLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleGenreClick = async (genre) => {
     if (isTyping || genreLoading) return;
     const prompt = `Suggest me some good ${genre} games.`;
-    const userMsg = { role: "user", parts: [{ text: prompt }] };
-    setChatHistory([...chatHistory, userMsg]);
-    setIsTyping(true);
     setGenreLoading(true);
     try {
-      const reply = await fetchGeminiResponse([...chatHistory, userMsg], prompt, GEMINI_API_KEY);
-      setChatHistory([
-        ...chatHistory,
-        userMsg,
-        { role: "model", parts: [{ text: reply }] },
-      ]);
+      if (sendMessage) {
+        await sendMessage(prompt);
+      }
     } catch (e) {
-      setChatHistory([
-        ...chatHistory,
-        userMsg,
-        { role: "model", parts: [{ text: "Sorry, there was an error." }] },
-      ]);
+      console.error(e);
+    } finally {
+      setGenreLoading(false);
     }
-    setIsTyping(false);
-    setGenreLoading(false);
   };
 
   return (

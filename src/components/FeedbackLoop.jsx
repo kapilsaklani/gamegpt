@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-
-const FEEDBACK_KEY = "gamebot_feedback_ratings";
+import React, { useState, useEffect } from "react";
+import { submitFeedbackBackend, fetchFeedbackBackend } from "../api/feedback";
 
 export default function FeedbackLoop() {
   const [rating, setRating] = useState(0);
@@ -8,39 +7,40 @@ export default function FeedbackLoop() {
   const [submitted, setSubmitted] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
 
-  // Load feedbacks from localStorage
-  React.useEffect(() => {
-    let ratings = [];
-    try {
-      ratings = JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || [];
-    } catch (e) {}
-    setFeedbacks(ratings);
+  useEffect(() => {
+    async function loadFeedbacks() {
+      const data = await fetchFeedbackBackend();
+      if (data) setFeedbacks(data);
+    }
+    loadFeedbacks();
   }, [submitted]);
 
   function handleRate(star) {
     setRating(star);
   }
 
-  function handleSubmit() {
-    let ratings = [];
-    try {
-      ratings = JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || [];
-    } catch (e) {}
-    ratings.push({ rating, comment, date: new Date().toISOString() });
-    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(ratings));
-    setFeedbacks(ratings);
+  async function handleSubmit() {
+    if (rating === 0) return;
+    await submitFeedbackBackend(rating, comment);
     setSubmitted(true);
   }
 
-  // Calculate average rating
-  const avgRating = feedbacks.length ? (feedbacks.reduce((sum, f) => sum + (f.rating || 0), 0) / feedbacks.length).toFixed(2) : null;
+  const avgRating = feedbacks.length
+    ? (feedbacks.reduce((sum, f) => sum + (f.rating || 0), 0) / feedbacks.length).toFixed(1)
+    : null;
 
   return (
     <div className="flex flex-col items-center py-8 mt-12 border-t border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-[#181b2a] rounded-lg">
       <h3 className="text-lg font-bold mb-2 text-blue-700 dark:text-blue-300">How helpful were these recommendations?</h3>
 
+      {avgRating && (
+        <div className="text-xs text-blue-600 dark:text-blue-300 mb-2">
+          Community Rating: <span className="font-bold text-yellow-400">★ {avgRating}</span> ({feedbacks.length} reviews in database)
+        </div>
+      )}
+
       <div className="flex gap-1 mb-2">
-        {[1,2,3,4,5].map(star => (
+        {[1, 2, 3, 4, 5].map(star => (
           <button
             key={star}
             className={`text-3xl transition-colors ${star <= rating ? 'text-yellow-400' : 'text-gray-400'}`}
@@ -66,13 +66,13 @@ export default function FeedbackLoop() {
         disabled={submitted || rating === 0}
         type="button"
       >
-        {submitted ? "Thank you!" : "Submit Feedback"}
+        {submitted ? "Thank you!" : "Submit Feedback (Save to DB)"}
       </button>
       {submitted && (
-        <div className="mt-2 text-green-600 dark:text-green-400 font-semibold">Your feedback helps improve recommendations!</div>
+        <div className="mt-2 text-green-600 dark:text-green-400 font-semibold">
+          Your feedback was saved to the PostgreSQL database!
+        </div>
       )}
-
     </div>
   );
 }
-
