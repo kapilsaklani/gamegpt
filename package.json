@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "node backend/server.js",
+    "server:dev": "npm --prefix backend run dev",
+    "dev:all": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm run server:dev\" \"npm run dev\""
   },
   "dependencies": {
     "marked": "^15.0.9",
@@ -16,6 +19,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.0",
+    "concurrently": "^10.0.7",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.3.0",
     "vite": "^4.0.0"

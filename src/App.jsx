@@ -61,33 +61,6 @@ function GenreFilterBar({ onGenreClick, loading }) {
 import GameCarousel from "./components/GameCarousel";
 import PopularGamesSidebar from "./components/PopularGamesSidebar";
 
-import { fetchPopularGames } from "./api/rawg";
-
-// Set your RAWG API key here (replace with your own key)
-const RAWG_API_KEY = "82f9e3d47f5a4fc58029006cc7b43b8d";
-
-// Fallback/popular games for the right sidebar
-const fallbackGames = [
-  {
-    id: 1,
-    title: "The Witcher 3",
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80",
-    rating: 9.5,
-  },
-  {
-    id: 2,
-    title: "Celeste",
-    image: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=400&q=80",
-    rating: 9.0,
-  },
-  {
-    id: 3,
-    title: "Hades",
-    image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
-    rating: 9.3,
-  },
-];
-
 function AppContent() {
   const { chatHistory, setChatHistory, isTyping, setIsTyping, sendMessage } = useChat();
   const [genreLoading, setGenreLoading] = useState(false);

@@ -22,7 +22,7 @@ export function ChatProvider({ children }) {
     }
   }, [theme]);
 
-  // Load chat sessions from Django PostgreSQL Backend
+  // Load chat sessions from Express PostgreSQL Backend (PERN)
   const loadSessions = useCallback(async () => {
     const sessions = await fetchChatSessions();
     if (sessions && sessions.length > 0) {
@@ -94,7 +94,7 @@ export function ChatProvider({ children }) {
     }
   };
 
-  // Create new chat in Django Backend
+  // Create new chat in Express Backend
   const newChat = async () => {
     const newSession = await createChatSession();
     if (newSession) {

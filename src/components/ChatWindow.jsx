@@ -5,13 +5,6 @@ import { useChat } from "../contexts/ChatContext";
 import CompareGamesModal from "./CompareGamesModal";
 import { marked } from "marked";
 
-// Fallback/popular games for the right sidebar
-const fallbackGames = [
-  { id: 1, title: "The Witcher 3", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/header.jpg", rating: 9.5 },
-  { id: 2, title: "Celeste", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/504230/header.jpg", rating: 9.0 },
-  { id: 3, title: "Hades", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1145360/header.jpg", rating: 9.3 },
-];
-
 function ChatBubble({ role, text }) {
   const isUser = role === "user";
   return (

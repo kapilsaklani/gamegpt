@@ -35,7 +35,7 @@ export default function InputBar() {
       return;
     }
 
-    // Standard message sent through Django Backend & Gemini API, stored in PostgreSQL!
+    // Standard message sent through Express Backend & Gemini API, stored in PostgreSQL!
     if (sendMessage) {
       await sendMessage(textToSend);
     }
